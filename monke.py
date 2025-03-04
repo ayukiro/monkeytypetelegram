@@ -5,6 +5,7 @@ import asyncio
 from aiogram import Bot, Dispatcher, types, F
 from aiogram.filters.command import Command, CommandStart
 from aiogram.types import InlineQuery, InlineQueryResultArticle, InputTextMessageContent
+import math
 
 logging.basicConfig(level=logging.INFO)
 
@@ -50,6 +51,28 @@ def format_time(seconds: float) -> str:
     elif minutes > 0:
         return f"{minutes}m {secs}s"
     return f"{secs}s"
+
+def get_level_from_total_xp(total_xp: int) -> int:
+    return math.floor((math.sqrt(392 * total_xp + 22801) - 53) / 98)
+
+def get_level_max_xp(level: int) -> int:
+    return 49 * (level - 1) + 100
+
+def get_total_xp_to_reach_level(level: int) -> int:
+    return (49 * pow(level, 2) + 53 * level - 102) / 2
+
+def get_xp_details(total_xp: int) -> dict:
+    level = get_level_from_total_xp(total_xp)
+    return {
+        "level": level,
+        "levelCurrentXp": total_xp - get_total_xp_to_reach_level(level),
+        "levelMaxXp": get_level_max_xp(level)
+    }
+
+def create_progress_bar(progress: float, length: int = 10) -> str:
+    filled = int(progress * length)
+    return "▓" * filled + "░" * (length - filled)
+
 
 def get_best_result(tests: list, language: str = None) -> dict:
     if not tests:
@@ -165,17 +188,29 @@ async def inline_query(inline_query: InlineQuery):
             return
 
 
+
         typing_stats = stats.get('typingStats', {})
         personal_bests = stats.get('personalBests', {})
         details = stats.get('details', {})
-        
-        # Get best results for different categories
+        total_xp = stats.get('xp', 0)
+        xp_details = get_xp_details(total_xp)
+
         time_tests = personal_bests.get('time', {})
         word_tests = personal_bests.get('words', {})
+
         keyboard_text = f"⌨️ Keyboard: {details.get('keyboard')}\n\n" if details.get('keyboard') else "\n"
+
+        total_xp = stats.get('xp', 0)
+        if total_xp > 0:
+            xp_details = get_xp_details(total_xp)
+            current_xp = xp_details['levelCurrentXp']
+            max_xp = xp_details['levelMaxXp']
+            progress = current_xp / max_xp
+            progress_bar = create_progress_bar(progress)
 
         stats_text = (
             f"📊 Monkeytype Stats for [{username}](https://monkeytype.com/profile/{username})\n"
+            f"📈 Level {xp_details['level']} {progress_bar} \n"
             f"{keyboard_text}"
             f"🎯 Tests completed: {typing_stats.get('completedTests', 0)}\n"
             f"🚀 Started tests: {typing_stats.get('startedTests', 0)}\n"
@@ -183,7 +218,6 @@ async def inline_query(inline_query: InlineQuery):
             f"🔥 Streaks (current and max): {stats.get('streak', 0)} / {stats.get('maxStreak', 0)} days\n\n"
             f"🏆 Best results:\n"
         )
-
         # Time mode bests
         for time_mode in ['15', '30', '60']:
             if time_mode in time_tests:
