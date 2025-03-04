@@ -164,17 +164,23 @@ async def inline_query(inline_query: InlineQuery):
             await inline_query.answer(results=[error_result], cache_time=5)
             return
 
+
         typing_stats = stats.get('typingStats', {})
         personal_bests = stats.get('personalBests', {})
+        details = stats.get('details', {})
         
+        # Get best results for different categories
         time_tests = personal_bests.get('time', {})
         word_tests = personal_bests.get('words', {})
-        
+        keyboard_text = f"⌨️ Keyboard: {details.get('keyboard')}\n\n" if details.get('keyboard') else "\n"
+
         stats_text = (
-            f"📊 Monkeytype Stats for [{username}](https://monkeytype.com/profile/{username})\n\n"
+            f"📊 Monkeytype Stats for [{username}](https://monkeytype.com/profile/{username})\n"
+            f"{keyboard_text}"
             f"🎯 Tests completed: {typing_stats.get('completedTests', 0)}\n"
             f"🚀 Started tests: {typing_stats.get('startedTests', 0)}\n"
-            f"⌨️ Time typing: {format_time(typing_stats.get('timeTyping', 0))}\n\n"
+            f"⏳ Time typing: {format_time(typing_stats.get('timeTyping', 0))}\n"
+            f"🔥 Streaks (current and max): {stats.get('streak', 0)} / {stats.get('maxStreak', 0)} days\n\n"
             f"🏆 Best results:\n"
         )
 
