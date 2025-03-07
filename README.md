@@ -2,7 +2,7 @@
 
 A Telegram bot that allows you to fetch and share Monkeytype user statistics using inline queries.
 
-Created by Claude AI as experiment.
+**Created by Claude AI as experiment.**
 
 ## Setup
 
@@ -32,16 +32,21 @@ python bot.py
 
 ```
 📊 Monkeytype Stats for username
+📈 Level 70 ▓▓▓▓░░░░░░ 
+⌨️ Keyboard: aula f75, lubed
 
-🎯 Tests completed: 692
-🚀 Started tests: 7424
-⌨️ Time typing: 9h 54m 54s
+🎯 Tests completed: 695
+🚀 Started tests: 7573
+⏳ Time typing: 10h 1m 21s
+🔥 Streaks (current and max): 2 / 28 days
 
 🏆 Best results:
-• 15s: 133 WPM (95.5% acc, russian)
-• 30s: 101 WPM (95.6% acc, russian)
-• 60s: 95 WPM (94.8% acc, english)
-• 100 words: 92 WPM (93.1% acc, russian)
+• 15s: 133.56 WPM (95.5% acc, russian)
+• 30s: 101.2 WPM (95.6% acc, russian)
+• 10 words: 142.63 WPM (100.0% acc, russian)
+• 25 words: 127.29 WPM (98.0% acc, russian)
+• 50 words: 100.06 WPM (96.9% acc, russian)
+• 100 words: 92.7 WPM (93.1% acc, russian)5• 100 words: 92 WPM (93.1% acc, russian)
 ```
 
 ## Other
